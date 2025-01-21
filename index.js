@@ -1,65 +1,74 @@
-// TODO: Include packages needed for this application
-const inquirer = await import('inquirer'); // Dynamic import with `await`
+const inquirer = await import('inquirer');
 const fs = await import('fs');
-import generateMarkdown from './generateMarkdown.js'; // Import the generateMarkdown function
-// TODO: Create an array of questions for user input
-const questions = [  {
+import generateMarkdown from './generateMarkdown.js';
+
+const questions = [
+  {
     type: 'input',
     name: 'title',
-    message: 'What is the title of your project?',
-},
-{
+    message: 'What is your title?',
+  },
+  {
     type: 'input',
     name: 'description',
-    message: 'Provide a short description of your project:',
-},
-{
+    message: 'Your description of the project:',
+  },
+  {
     type: 'input',
     name: 'installation',
-    message: 'What are the installation instructions?',
-},
-{
+    message: 'How do you install this project?',
+  },
+  {
     type: 'input',
     name: 'usage',
-    message: 'Provide usage information:',
-},
-{
+    message: 'What is the intended usage?',
+  },
+  {
     type: 'input',
     name: 'contributing',
-    message: 'List the contribution guidelines:',
-},
-{
+    message: 'What are your contribution guidelines?',
+  },
+  {
     type: 'input',
     name: 'tests',
-    message: 'Provide test instructions:',
-},
-{
+    message: 'What are your test instructions?',
+  },
+
+  {
     type: 'input',
     name: 'github',
-    message: 'What is your GitHub username?',
-},
-{
+    message: 'What is your GitHub name?',
+  },
+  {
     type: 'input',
     name: 'email',
-    message: 'What is your email address?',
-},];
+    message: 'What is your email?',
+  },
+  {
+    type: 'input',
+    name: 'license',
+    message: 'What license will your project use?',
+  },
+];
 
-// TODO: Create a function to write README file
-function writeToFile(fileName, data) {
-    const content = generateMarkdown(data);
-    fs.writeFile(fileName, content, (err) =>
-      err ? console.error(err) : console.log('README.md has been created!')
-    );
+async function writeToFile(fileName, data) {
+  const content = generateMarkdown(data);
+  try {
+    await fs.promises.writeFile(fileName, content);
+    console.log('README.md has been created!');
+  } catch (err) {
+    console.error(err);
   }
+}
 
-// TODO: Create a function to initialize app
 async function init() {
-    const inquirer = (await import('inquirer')).default; // Ensure inquirer.default is used
-    inquirer.prompt(questions).then((responses) => {
-      writeToFile('README.md', responses);
-    });
+  try {
+    const responses = await inquirer.default.prompt(questions);
+    await writeToFile('README.md', responses);
+  } catch (err) {
+    console.error('Error during initialization:', err);
   }
+}
 
-// Function call to initialize app
 init();
 
